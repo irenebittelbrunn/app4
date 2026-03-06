@@ -18,11 +18,11 @@ function adicionar() {
   else{
     if(add.value.trim()){
          tarefas.value.push(add.value);
-         aviso.value.splice(indexedDB, 1)
+         aviso.value.splice(index, 1)
     }
   }
   }
-}
+
 
 </script>
 <template>
