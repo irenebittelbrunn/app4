@@ -41,7 +41,6 @@ function deleteTarefa(item) {
 
 
 </script>
-
 <template>
   <div class="container">
     <h1>Lista de Tarefas</h1>
@@ -58,7 +57,6 @@ function deleteTarefa(item) {
     <button @click="tarefas.sort()">Ordenar</button>
   </div>
 </template>
-
 <style scoped>
 input {
   background-color: brown;
@@ -67,7 +65,6 @@ input {
   border-radius: 50px;
   color: white;
 }
-
 button {
   background-color: brown;
   border: none;
@@ -75,11 +72,9 @@ button {
   font-size: 1.5rem;
   margin: 1vw;
 }
-
 h1 {
   font-size: 3rem;
 }
-
 ul {
   font-size: 1.5rem;
 }
