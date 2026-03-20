@@ -1,79 +1,20 @@
 <script setup>
-import { ref, computed } from 'vue';
+import{ref} from 'vue';
+const nome = ref('');
+const sobrenome = ref('');
+const texto = ref ('');
 
-let tarefas = ref([
-  { texto: 'Prova Matemática', concluida: false },
-  { texto: 'Prova Geografia', concluida: false }
-])
-let add = ref("")
-let aviso = ref(false)
-let filtro = ref("todas") 
-function adicionar() {
-  if (add.value.trim().length < 5) {
-    aviso.value = true
-    return
-  }
-  tarefas.value.push({
-    texto: add.value,
-    concluida: false
-  })
-  add.value = ""
-  aviso.value = false
-}
-function editarTarefa(tarefa) {
-  const edicao = prompt(`Editando ${tarefa.texto}...`)
-  if (!edicao || edicao.length < 5) {
-    alert("Mínimo 5 caracteres")
-    return
-  }
-  tarefa.texto = edicao
-}
-function deleteTarefa(tarefa) {
-  tarefas.value = tarefas.value.filter(t => t !== tarefa)
-}
-function toggleConcluida(tarefa) {
-  tarefa.concluida = !tarefa.concluida
-}
-const tarefasFiltradas = computed(() => {
-  if (filtro.value === "pendentes") {
-    return tarefas.value.filter(t => !t.concluida)
-  }
-  if (filtro.value === "concluidas") {
-    return tarefas.value.filter(t => t.concluida)
-  }
-  return tarefas.value
-})
-const pendentes = computed(() =>
-  tarefas.value.filter(t => !t.concluida).length
-)
-const concluidas = computed(() =>
-  tarefas.value.filter(t => t.concluida).length
+const nomeCompleto = () => (
+  console.log('calculando nome com função')
+  return `${nome.value} ${sobrenome.value}`
 )
 </script>
 <template>
-  <div>
-    <h1>Lista de Tarefas</h1>
-    <input v-model="add" @keyup.enter="adicionar">
-    <button @click="adicionar">Adicionar</button>
-    <p v-if="aviso">Mínimo 5 caracteres</p>
-    <select v-model="filtro" class="select">
-      <option value="todas">Todas</option>
-      <option value="pendentes">Pendentes</option>
-      <option value="concluidas">Concluídas</option>
-    </select>
-    <ul>
-      <li v-for="tarefa in tarefasFiltradas" :key="tarefa.texto">
-        <input type="checkbox" v-model="tarefa.concluida">
-        <span :style="{ textDecoration: tarefa.concluida ? 'line-through' : 'none' }">
-          {{ tarefa.texto }}
-        </span>
-        <button @click="editarTarefa(tarefa)">E</button>
-        <button @click="deleteTarefa(tarefa)">D</button>
-      </li>
-    </ul>
-    <p>Pendentes: {{ pendentes }}</p>
-    <p>Concluídas: {{ concluidas }}</p>
-  </div>
+ <div class="container">
+<input type="text" v-model="nome" placeholder="Nome">
+<input type="text" v-model="sobrenome" placeholder="Sobrenome">
+<label>{{ nomeCompleto() }}</label>
+ </div>
 </template>
 <style scoped>
 input {
