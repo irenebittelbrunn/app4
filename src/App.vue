@@ -1,60 +1,78 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+
 let tarefas = ref([
-  'Prova Matemática',
-  'Prova Geografia',
-  'Trabalho Sociologia',
-  'Seminário Português',
-  'Seminário Educação Física',
-  'Seminário Geografia',
-  'Prova Física'
+  { texto: 'Prova Matemática', concluida: false },
+  { texto: 'Prova Geografia', concluida: false }
 ])
-let aviso = ref(false);
 let add = ref("")
+let aviso = ref(false)
+let filtro = ref("todas") 
 function adicionar() {
-  if (add.value.length < 5) {
-  } else {
-    if (add.value.trim()) {
-      tarefas.value.push(add.value);
-      aviso.value = false
-      add.value = ""
-    }
+  if (add.value.trim().length < 5) {
+    aviso.value = true
+    return
   }
+  tarefas.value.push({
+    texto: add.value,
+    concluida: false
+  })
+  add.value = ""
+  aviso.value = false
 }
-
-function editarTarefa(item) {
-  const pos = tarefas.value.indexOf(item);
-  const edicao = prompt(`Editando ${item}...`);
-  if (edicao.length < 5) {
-    alert("Insira no mínimo 5 caracteres")
-  } else {
-    tarefas.value.splice(pos, 1, edicao);
+function editarTarefa(tarefa) {
+  const edicao = prompt(`Editando ${tarefa.texto}...`)
+  if (!edicao || edicao.length < 5) {
+    alert("Mínimo 5 caracteres")
+    return
   }
-
-
+  tarefa.texto = edicao
 }
-
-function deleteTarefa(item) {
-  const pos = tarefas.value.indexOf(item);
-  tarefas.value.splice(pos, 1);
+function deleteTarefa(tarefa) {
+  tarefas.value = tarefas.value.filter(t => t !== tarefa)
 }
-
-
+function toggleConcluida(tarefa) {
+  tarefa.concluida = !tarefa.concluida
+}
+const tarefasFiltradas = computed(() => {
+  if (filtro.value === "pendentes") {
+    return tarefas.value.filter(t => !t.concluida)
+  }
+  if (filtro.value === "concluidas") {
+    return tarefas.value.filter(t => t.concluida)
+  }
+  return tarefas.value
+})
+const pendentes = computed(() =>
+  tarefas.value.filter(t => !t.concluida).length
+)
+const concluidas = computed(() =>
+  tarefas.value.filter(t => t.concluida).length
+)
 </script>
 <template>
-  <div class="container">
+  <div>
     <h1>Lista de Tarefas</h1>
-    <input type="text" v-model="add" @keyup.enter="adicionar">
-    <button @click="adicionar">CONFIRMAR</button>
-    <p v-show="aviso">Insira no mínimo 5 caracteres</p>
+    <input v-model="add" @keyup.enter="adicionar">
+    <button @click="adicionar">Adicionar</button>
+    <p v-if="aviso">Mínimo 5 caracteres</p>
+    <select v-model="filtro" class="select">
+      <option value="todas">Todas</option>
+      <option value="pendentes">Pendentes</option>
+      <option value="concluidas">Concluídas</option>
+    </select>
     <ul>
-      <li v-for="tarefa in tarefas" :key="tarefa">
-        <a href="#" @click.prevent="editarTarefa(tarefa)">E</a>
-        <a href="#" @click.prevent="deleteTarefa(tarefa)">D</a>
-        {{ tarefa }}
+      <li v-for="tarefa in tarefasFiltradas" :key="tarefa.texto">
+        <input type="checkbox" v-model="tarefa.concluida">
+        <span :style="{ textDecoration: tarefa.concluida ? 'line-through' : 'none' }">
+          {{ tarefa.texto }}
+        </span>
+        <button @click="editarTarefa(tarefa)">E</button>
+        <button @click="deleteTarefa(tarefa)">D</button>
       </li>
     </ul>
-    <button @click="tarefas.sort()">Ordenar</button>
+    <p>Pendentes: {{ pendentes }}</p>
+    <p>Concluídas: {{ concluidas }}</p>
   </div>
 </template>
 <style scoped>
@@ -77,5 +95,19 @@ h1 {
 }
 ul {
   font-size: 1.5rem;
+}
+option{
+  font-size: 1.5rem;
+  background-color: brown;
+  color: white;
+}
+p{
+  font-size: 1.5rem;
+}
+.select{
+  font-size: 1.5rem;
+  background-color: brown;
+  color: white;
+  border-radius: 50px;
 }
 </style>
